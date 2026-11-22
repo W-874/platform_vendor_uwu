@@ -37,6 +37,14 @@ PRODUCT_PACKAGES += \
     uwuPrism \
     ThemePicker
 
+# MiPush
+PRODUCT_PACKAGES += \
+    MiPushXmsf \
+    MiPushManager
+
+PRODUCT_COPY_FILES += \
+    vendor/uwu-prebuilts/MiPush/org.uwuaosp.feature.MIPUSH.xml:$(TARGET_COPY_OUT_PRODUCT)/etc/permissions/org.uwuaosp.feature.MIPUSH.xml
+
 # Lineage interfaces
 PRODUCT_PACKAGES += \
     framework_compatibility_matrix.lineage.xml
