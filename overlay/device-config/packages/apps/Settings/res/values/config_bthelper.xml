@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SPDX-License-Identifier: Apache-2.0 -->
+<resources>
+    <string name="config_bt_slice_intent_action" translatable="false">com.android.bluetooth.bthelper.ACTION_OPEN_SETTINGS</string>
+    <string name="config_bt_slice_pending_intent_action" translatable="false">com.android.bluetooth.bthelper.ACTION_SETTINGS_PENDING_INTENT</string>
+    <string name="config_bt_slice_extra_intent" translatable="false">com.android.bluetooth.bthelper.extra.SETTINGS_INTENT</string>
+    <string name="config_bt_slice_extra_pending_intent" translatable="false">com.android.bluetooth.bthelper.extra.SETTINGS_PENDING_INTENT</string>
+</resources>
