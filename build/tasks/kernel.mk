@@ -152,9 +152,12 @@ endif
 KERNEL_CONFIG := $(KERNEL_OUT)/.config
 KERNEL_RELEASE := $(KERNEL_OUT)/include/config/kernel.release
 ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
+# Prebuilt-only boards need not supply a source kernel series.
+ifneq ($(strip $(TARGET_KERNEL_VERSION)),)
 ifeq ($(call is-version-greater-or-equal,$(TARGET_KERNEL_VERSION),5.15),true)
 ifeq ($(call is-version-lower-or-equal,$(TARGET_KERNEL_VERSION),6.1),true)
 GKI_SUFFIX := /$(shell echo android$(PLATFORM_VERSION)-$(TARGET_KERNEL_VERSION))
+endif
 endif
 endif
 endif
@@ -183,11 +186,9 @@ ifeq "$(wildcard $(KERNEL_SRC) )" ""
         HAS_PREBUILT_KERNEL := true
         NEEDS_KERNEL_COPY := true
     else
-        $(foreach cf,$(PRODUCT_COPY_FILES), \
-            $(eval _src := $(call word-colon,1,$(cf))) \
-            $(eval _dest := $(call word-colon,2,$(cf))) \
-            $(ifeq kernel,$(_dest), \
-                $(eval HAS_PREBUILT_KERNEL := true)))
+        ifneq ($(filter kernel,$(foreach cf,$(PRODUCT_COPY_FILES),$(call word-colon,2,$(cf)))),)
+            HAS_PREBUILT_KERNEL := true
+        endif
     endif
 
     ifneq ($(TARGET_KERNEL_PLATFORM_TARGET),)

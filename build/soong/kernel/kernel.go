@@ -727,6 +727,12 @@ func kernelHeadersFactory() android.Module {
 }
 
 func (m *kernelHeadersModule) DepsMutator(ctx android.BottomUpMutatorContext) {
+	if ctx.Config().VendorConfig("uwuVarsPlugin").Bool("UWU_PREEXPORTED_UAPI") {
+		if len(ctx.DeviceConfig().DeviceKernelHeaderDirs()) == 0 {
+			ctx.ModuleErrorf("pre-exported UAPI selected without a kernel header directory")
+		}
+		return
+	}
 	module := ctx.Config().VendorConfig("uwuVarsPlugin").String("SOONG_KERNEL_MODULE")
 	if module == "" {
 		module = legacyKernelHeadersModule
