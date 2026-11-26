@@ -33,7 +33,6 @@ PRODUCT_PACKAGES += \
     uwuClock \
     CatShare \
     Kotj \
-    uwuAICore \
     uwuPrism \
     ThemePicker
 

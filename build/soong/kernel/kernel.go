@@ -665,11 +665,24 @@ func (m *kernelModule) buildSourceStamp(ctx android.ModuleContext, sourceRoots [
 	if len(dirs) > 0 {
 		// ImplicitDirectory requires nsjail or sbox. nsjail cannot remount "/"
 		// when AppArmor restricts unprivileged user namespaces.
-		rule.Command().
+		// The source tree can change after Soong has evaluated the glob above.
+		// Filter stale directories at execution time so dir_to_depfile only
+		// receives paths that still exist; the glob dependencies will cause
+		// Soong to regenerate this rule if the source tree changes again.
+		cmd := rule.Command().Text("set --; for dir in")
+		cmd.Text(strings.Join(proptools.ShellEscapeList(dirs), " "))
+		cmd.Text("; do if [ -d \"$dir\" ]; then set -- \"$@\" \"$dir\"; fi; done;")
+		depfile := outDir.Join(ctx, "source.d")
+		cmd.Text("if [ \"$#\" -gt 0 ]; then").
 			BuiltTool("dir_to_depfile").
-			FlagWithDepFile("-o ", outDir.Join(ctx, "source.d")).
+			FlagWithDepFile("-o ", depfile).
 			FlagWithArg("-t ", stamp.String()).
-			Text(strings.Join(dirs, " "))
+			Text("\"$@\"").
+			Text("; else printf '%s:\\n'").
+			Text(proptools.ShellEscape(stamp.String())).
+			Text(">").
+			Text(proptools.ShellEscape(depfile.String())).
+			Text("; fi")
 	}
 	rule.Build("kernel_source_deps", "Kernel source dependencies")
 	return stamp
